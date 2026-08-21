@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alberto Deco — Maquette visuelle (V1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --clay:#b5602c;
+    --clay-dark:#8f4a20;
+    --charcoal:#231f1b;
+    --charcoal-soft:#3a342e;
+    --cream:#f4ede1;
+    --cream-2:#ece2d2;
+    --brass:#a68a5b;
+    --sage:#6f7a5e;
+    --line:rgba(35,31,27,0.12);
+    --shadow: 0 20px 60px rgba(35,31,27,0.18);
+    --radius: 2px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Work Sans', sans-serif;
+    background:var(--cream);
+    color:var(--charcoal);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{ font-family:'Fraunces', serif; letter-spacing:-0.01em;}
+  a{color:inherit; text-decoration:none;}
+  img,svg{display:block; max-width:100%;}
+  .container{ max-width:1240px; margin:0 auto; padding:0 40px;}
+
+  /* grain overlay */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.045; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* preview badge */
+  .preview-badge{
+    position:fixed; top:14px; left:14px; z-index:10000;
+    background:var(--charcoal); color:var(--cream); font-family:'Work Sans';
+    font-size:11px; letter-spacing:0.12em; text-transform:uppercase; padding:8px 14px;
+    border-radius:100px; box-shadow:var(--shadow); display:flex; align-items:center; gap:8px;
+  }
+  .preview-badge span.dot{width:6px; height:6px; border-radius:50%; background:var(--clay); display:inline-block; animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.25;}}
+
+  /* header */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    padding:22px 0; transition:all .4s ease;
+    background:linear-gradient(to bottom, rgba(244,237,225,0.92), rgba(244,237,225,0));
+  }
+  header.scrolled{ background:rgba(244,237,225,0.96); backdrop-filter:blur(10px); box-shadow:0 1px 0 var(--line); padding:14px 0;}
+  .header-row{ display:flex; align-items:center; justify-content:space-between;}
+  .logo{ font-family:'Fraunces'; font-style:italic; font-weight:500; font-size:26px; color:var(--charcoal); display:flex; align-items:baseline; gap:6px;}
+  .logo .dot{color:var(--clay);}
+  nav{ display:flex; align-items:center; gap:36px;}
+  nav a{ font-size:13px; letter-spacing:0.06em; text-transform:uppercase; position:relative; padding-bottom:4px;}
+  nav a::after{content:''; position:absolute; left:0; bottom:0; height:1px; width:0; background:var(--clay); transition:width .3s ease;}
+  nav a:hover::after{width:100%;}
+  .header-actions{ display:flex; align-items:center; gap:18px;}
+  .lang-toggle{ display:flex; border:1px solid var(--line); border-radius:100px; overflow:hidden; font-size:11px; letter-spacing:0.06em;}
+  .lang-toggle button{ padding:6px 12px; background:none; border:none; cursor:pointer; font-family:'Work Sans'; color:var(--charcoal-soft);}
+  .lang-toggle button.active{ background:var(--charcoal); color:var(--cream);}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; padding:12px 24px; font-size:12px; letter-spacing:0.08em; text-transform:uppercase;
+    border-radius:100px; transition:all .3s ease; cursor:pointer; border:1px solid transparent; font-family:'Work Sans'; font-weight:500;
+  }
+  .btn-primary{ background:var(--clay); color:var(--cream);}
+  .btn-primary:hover{ background:var(--clay-dark); transform:translateY(-2px); box-shadow:0 10px 24px rgba(181,96,44,0.35);}
+  .btn-outline{ border-color:var(--charcoal); color:var(--charcoal);}
+  .btn-outline:hover{ background:var(--charcoal); color:var(--cream);}
+
+  /* hero — scroll-driven animated before/after sequence */
+  .hero-scroll{ position:relative; height:350vh; background:var(--charcoal);}
+  .hero-sticky{
+    position:sticky; top:0; height:100vh; overflow:hidden; display:flex; flex-direction:column; justify-content:center;
+    padding-top:120px;
+  }
+  .hero-bg{ position:absolute; inset:0; z-index:0; overflow:hidden;}
+  .hero-bg-zoom{ position:absolute; inset:-3%; will-change:transform;}
+  .hero-scene{ position:absolute; inset:0; opacity:0; transition:opacity .35s ease;}
+  .hero-scene.active{ opacity:1;}
+  .hero-scene img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .hero-scene .scene-after{ z-index:0;}
+  .hero-scene .scene-before{ z-index:1; will-change:clip-path;}
+  .hero-scrim{
+    position:absolute; inset:0; z-index:1;
+    background:linear-gradient(180deg, rgba(23,19,16,0.6), rgba(23,19,16,0.28) 45%, rgba(23,19,16,0.7));
+  }
+  .hero-frame{
+    position:absolute; inset:26px; border:1px solid rgba(244,237,225,0.28); z-index:2; pointer-events:none;
+  }
+  .hero-frame::before{ content:'ALBERTO DECO'; position:absolute; top:-10px; left:24px; background:rgba(23,19,16,0.8); padding:0 10px; font-size:10px; letter-spacing:0.25em; color:var(--cream);}
+  .hero-inner{ position:relative; z-index:3;}
+  .hero-eyebrow{ display:flex; align-items:center; gap:10px; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--brass); margin-bottom:26px;}
+  .hero-eyebrow::before{ content:''; width:34px; height:1px; background:var(--clay);}
+  .hero-scroll h1{
+    font-size:clamp(48px, 8vw, 108px); font-weight:400; line-height:0.98; color:var(--cream); max-width:920px;
+  }
+  .hero-scroll h1 em{ font-style:italic; color:var(--clay);}
+  .hero-scroll .hero-sub{ margin-top:30px; max-width:520px; font-size:18px; line-height:1.6; color:rgba(244,237,225,0.82); font-weight:300;}
+  .hero-cta{ margin-top:44px; display:flex; gap:16px; flex-wrap:wrap;}
+  .hero-scroll .btn-outline{ border-color:var(--cream); color:var(--cream);}
+  .hero-scroll .btn-outline:hover{ background:var(--cream); color:var(--charcoal);}
+  .hero-scene-tag{
+    margin-top:56px; display:inline-flex; align-items:center; gap:10px; font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--cream); background:rgba(23,19,16,0.55); padding:9px 16px; border-radius:100px; backdrop-filter:blur(6px); border:1px solid rgba(244,237,225,0.2);
+  }
+  .hero-scene-tag .rec{ width:7px; height:7px; border-radius:50%; background:var(--clay); animation:pulse 1.6s infinite;}
+  .hero-scroll .scroll-cue{ color:rgba(244,237,225,0.75);}
+  .hero-scroll .scroll-cue .line{ background:rgba(244,237,225,0.5);}
+  .ph{ position:relative; overflow:hidden; border-radius:var(--radius);}
+  .ph img,.ph .ph-fill{ width:100%; height:100%; object-fit:cover; display:block;}
+  .ph-fill{
+    background:linear-gradient(135deg, var(--cream-2), #d9c9ac 60%, var(--brass));
+  }
+  .ph-fill.b{ background:linear-gradient(135deg, #2c2620, var(--charcoal-soft) 60%, #55483a);}
+  .ph-fill.c{ background:linear-gradient(135deg, #cf8b57, var(--clay) 60%, var(--clay-dark));}
+  .ph-tag{
+    position:absolute; bottom:10px; left:10px; background:rgba(35,31,27,0.65); color:var(--cream);
+    font-size:9px; letter-spacing:0.08em; text-transform:uppercase; padding:5px 9px; border-radius:100px; backdrop-filter:blur(4px);
+  }
+  .scroll-cue{ position:absolute; bottom:36px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--charcoal-soft); z-index:2;}
+  .scroll-cue .line{ width:1px; height:34px; background:var(--charcoal-soft); position:relative; overflow:hidden;}
+  .scroll-cue .line::after{content:''; position:absolute; top:-100%; left:0; width:100%; height:100%; background:var(--clay); animation:scrollLine 1.8s infinite;}
+  @keyframes scrollLine{ 0%{top:-100%;} 100%{top:100%;}}
+
+  /* marquee */
+  .marquee-wrap{ background:var(--charcoal); overflow:hidden; padding:16px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .marquee{ display:flex; gap:50px; white-space:nowrap; animation:marquee 22s linear infinite; width:max-content;}
+  .marquee span{ font-family:'Fraunces'; font-style:italic; font-size:20px; color:var(--cream-2); display:flex; align-items:center; gap:50px;}
+  .marquee span::after{ content:'—'; color:var(--clay);}
+  @keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);}}
+
+  section{ padding:130px 0;}
+  .section-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:60px; gap:40px; flex-wrap:wrap;}
+  .eyebrow{ font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--clay-dark); margin-bottom:16px; display:block;}
+  .section-head h2{ font-size:clamp(32px,4vw,52px); font-weight:400; max-width:600px;}
+  .section-head p{ max-width:340px; font-size:15px; line-height:1.6; color:var(--charcoal-soft); font-weight:300;}
+
+  .reveal{ opacity:0; transform:translateY(36px); transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);}
+  .reveal.in{ opacity:1; transform:translateY(0);}
+
+  /* services bento */
+  .bento{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .bento-card{
+    background:var(--cream-2); border:1px solid var(--line); border-radius:var(--radius); padding:40px 34px; min-height:340px;
+    display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:all .45s ease;
+  }
+  .bento-card:hover{ background:var(--charcoal); color:var(--cream); transform:translateY(-6px); box-shadow:var(--shadow);}
+  .bento-card:hover .bento-num, .bento-card:hover p{ color:rgba(244,237,225,0.65);}
+  .bento-num{ font-family:'Fraunces'; font-style:italic; font-size:14px; color:var(--brass);}
+  .bento-card h3{ font-size:30px; font-weight:400; margin:18px 0 12px;}
+  .bento-card p{ font-size:14px; line-height:1.6; color:var(--charcoal-soft); font-weight:300;}
+  .bento-icon{ width:44px; height:44px; border-radius:50%; border:1px solid currentColor; display:flex; align-items:center; justify-content:center; margin-top:22px; align-self:flex-end; font-size:16px;}
+
+  /* before/after */
+  .ba-wrap{ position:relative; border-radius:var(--radius); overflow:hidden; height:520px; box-shadow:var(--shadow); cursor:ew-resize; user-select:none;}
+  .ba-after,.ba-before{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .ba-before{ clip-path:inset(0 50% 0 0);}
+  .ba-label{ position:absolute; top:24px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; padding:8px 14px; border-radius:100px; backdrop-filter:blur(6px);}
+  .ba-label.avant{ left:24px; background:rgba(23,19,16,0.55); color:#f4ede1;}
+  .ba-label.apres{ right:24px; background:rgba(244,237,225,0.75); color:#231f1b;}
+  .ba-handle{ position:absolute; top:0; bottom:0; left:50%; width:2px; background:var(--cream); transform:translateX(-1px); box-shadow:0 0 0 1px rgba(0,0,0,0.15);}
+  .ba-handle::after{ content:'⇔'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:48px; height:48px; background:var(--cream); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:var(--shadow); color:var(--charcoal);}
+  .ba-caption{ text-align:center; margin-top:22px; font-size:13px; color:var(--charcoal-soft); font-style:italic; font-family:'Fraunces';}
+
+  /* gallery */
+  .gallery{ display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:150px; gap:16px;}
+  .gallery .ph:nth-child(1){ grid-column:span 2; grid-row:span 2;}
+  .gallery .ph:nth-child(4){ grid-row:span 2;}
+  .gallery .ph:nth-child(6){ grid-column:span 2;}
+  .gallery .ph{ transition:transform .5s ease; }
+  .gallery .ph:hover{ transform:scale(0.97);}
+
+  /* primes */
+  .primes{ background:var(--charcoal); color:var(--cream); border-radius:var(--radius); padding:70px; position:relative; overflow:hidden;}
+  .primes::before{ content:'%'; position:absolute; font-family:'Fraunces'; font-style:italic; font-size:340px; right:-40px; top:-100px; color:rgba(244,237,225,0.04); line-height:1;}
+  .primes-grid{ display:grid; grid-template-columns:1fr 1fr; gap:60px; position:relative; z-index:1;}
+  .primes h2{ font-size:36px; font-weight:400; margin-bottom:18px; color:var(--cream);}
+  .primes p{ font-weight:300; line-height:1.7; color:rgba(244,237,225,0.7); font-size:15px;}
+  .primes-list{ display:flex; flex-direction:column; gap:0;}
+  .primes-list .item{ display:flex; justify-content:space-between; padding:18px 0; border-bottom:1px solid rgba(244,237,225,0.14); font-size:14px;}
+  .primes-list .item span:first-child{ font-family:'Fraunces'; font-style:italic; font-size:16px;}
+  .primes-list .item span:last-child{ color:var(--brass); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;}
+
+  /* testimonials */
+  .testi-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .testi{ background:var(--cream); border:1px solid var(--line); padding:34px; border-radius:var(--radius);}
+  .testi .stars{ color:var(--clay); font-size:14px; letter-spacing:2px; margin-bottom:18px;}
+  .testi p{ font-size:15px; line-height:1.7; color:var(--charcoal-soft); font-style:italic; font-family:'Fraunces'; margin-bottom:22px;}
+  .testi .who{ font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--charcoal); display:flex; align-items:center; gap:10px;}
+  .testi .who::before{ content:''; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,var(--brass),var(--clay));}
+
+  /* contact */
+  .contact-wrap{ display:grid; grid-template-columns:1fr 1fr; gap:0; background:var(--cream-2); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow);}
+  .contact-form{ padding:70px; }
+  .contact-info{ padding:70px; background:var(--charcoal); color:var(--cream); position:relative;}
+  .field{ margin-bottom:24px;}
+  .field label{ display:block; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px; color:var(--charcoal-soft);}
+  .field input, .field select, .field textarea{
+    width:100%; border:none; border-bottom:1px solid var(--line); background:transparent; padding:10px 2px; font-family:'Work Sans'; font-size:15px; color:var(--charcoal);
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{ outline:none; border-color:var(--clay);}
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  .upload-box{ border:1px dashed var(--charcoal-soft); border-radius:var(--radius); padding:22px; text-align:center; font-size:12px; color:var(--charcoal-soft); margin-bottom:28px;}
+  .info-item{ display:flex; gap:16px; padding:20px 0; border-bottom:1px solid rgba(244,237,225,0.14);}
+  .info-item .ico{ width:36px; height:36px; border-radius:50%; border:1px solid rgba(244,237,225,0.4); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px;}
+  .info-item .lbl{ font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--brass); margin-bottom:4px;}
+  .mini-cal{ margin-top:30px; background:rgba(244,237,225,0.06); border:1px solid rgba(244,237,225,0.14); border-radius:var(--radius); padding:20px;}
+  .mini-cal-head{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:14px; color:var(--brass); letter-spacing:0.08em; text-transform:uppercase;}
+  .mini-cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px;}
+  .mini-cal-grid div{ aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:11px; color:rgba(244,237,225,0.5); border-radius:3px;}
+  .mini-cal-grid div.active{ background:var(--clay); color:var(--cream); font-weight:600;}
+
+  /* footer */
+  footer{ background:var(--charcoal); color:var(--cream); padding:80px 0 30px;}
+  .footer-top{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:50px; padding-bottom:60px; border-bottom:1px solid rgba(244,237,225,0.14);}
+  .footer-top .logo{ color:var(--cream); margin-bottom:16px;}
+  .footer-top p{ font-size:13px; color:rgba(244,237,225,0.55); line-height:1.7; font-weight:300; max-width:280px;}
+  .footer-col h4{ font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--brass); margin-bottom:20px;}
+  .footer-col a{ display:block; font-size:13px; color:rgba(244,237,225,0.7); margin-bottom:12px;}
+  .footer-bottom{ display:flex; justify-content:space-between; padding-top:26px; font-size:11px; color:rgba(244,237,225,0.4); letter-spacing:0.04em;}
+
+  /* chat bubble mockup */
+  .chat-bubble{
+    position:fixed; bottom:28px; right:28px; z-index:500; width:60px; height:60px; border-radius:50%;
+    background:var(--clay); color:var(--cream); display:flex; align-items:center; justify-content:center; font-size:22px;
+    box-shadow:var(--shadow); cursor:pointer; animation:float 3.5s ease-in-out infinite;
+  }
+  @keyframes float{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-8px);} }
+  .chat-tag{ position:absolute; bottom:72px; right:0; background:var(--charcoal); color:var(--cream); font-size:11px; padding:6px 12px; border-radius:100px; white-space:nowrap; opacity:0; transform:translateY(6px); transition:all .3s ease;}
+  .chat-bubble:hover + .chat-tag, .chat-bubble:hover .chat-tag{ opacity:1; transform:translateY(0);}
+
+  [data-en]{ display:none; }
+  html.en [data-fr]{ display:none; }
+  html.en [data-en]{ display:initial; }
+  html.en .bento-card p, html.en .hero-sub, html.en .primes p{ display:block;}
+
+  @media (max-width:900px){
+    nav{ display:none;}
+    .bento, .testi-row{ grid-template-columns:1fr;}
+    .hero-visual-row{ grid-template-columns:1fr; height:auto;}
+    .hero-visual-row .ph{ height:180px;}
+    .gallery{ grid-template-columns:repeat(2,1fr);}
+    .primes-grid, .contact-wrap, .footer-top{ grid-template-columns:1fr;}
+    .contact-form, .contact-info, .primes{ padding:40px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="preview-badge"><span class="dot"></span> Maquette de validation — visuel uniquement, contenu &amp; photos à venir</div>
+
+<!-- HEADER -->
+<header id="header">
+  <div class="container header-row">
+    <a href="#" class="logo">Alberto<span class="dot">·</span>Deco</a>
+    <nav>
+      <a href="#services" data-fr>Services</a><a href="#services" data-en>Services</a>
+      <a href="#realisations" data-fr>Réalisations</a><a href="#realisations" data-en>Projects</a>
+      <a href="#primes" data-fr>Primes</a><a href="#primes" data-en>Grants</a>
+      <a href="#avis" data-fr>Avis</a><a href="#avis" data-en>Reviews</a>
+      <a href="#contact" data-fr>Contact</a><a href="#contact" data-en>Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang-toggle">
+        <button class="active" onclick="setLang('fr', this)">FR</button>
+        <button onclick="setLang('en', this)">EN</button>
+      </div>
+      <a href="#contact" class="btn btn-primary">
+        <span data-fr>Demander un devis</span><span data-en>Get a quote</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO — scroll-driven animated before/after sequence (auto-plays as you scroll, no click needed) -->
+<section class="hero-scroll" id="heroScroll">
+  <div class="hero-sticky">
+    <div class="hero-bg">
+      <div class="hero-bg-zoom" id="heroBgZoom">
+        <div class="hero-scene active" data-scene="0">
+          <img class="scene-after" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195022_6c432d05-b418-4041-8995-1a9b927a6f35.png" alt="Extérieur après">
+          <img class="scene-before" id="sceneBefore0" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_193555_2024596f-c567-4154-961e-f1ed143ef409.png" alt="Extérieur avant">
+        </div>
+        <div class="hero-scene" data-scene="1">
+          <img class="scene-after" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_203040_270c9685-7cd3-4dfd-8b25-d757034fa9c1.png" alt="Cuisine après">
+          <img class="scene-before" id="sceneBefore1" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195848_a447e385-0006-4fbf-a780-5871c45eef12.png" alt="Cuisine avant">
+        </div>
+        <div class="hero-scene" data-scene="2">
+          <img class="scene-after" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195947_4ef0e5d2-7498-442b-8168-c975bd652582.png" alt="Salle de bain après">
+          <img class="scene-before" id="sceneBefore2" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195924_2e34a5f4-dfb8-4b59-bbd4-26920a4b8205.png" alt="Salle de bain avant">
+        </div>
+      </div>
+      <div class="hero-scrim"></div>
+    </div>
+    <div class="hero-frame"></div>
+    <div class="container hero-inner">
+      <div class="hero-eyebrow"><span data-fr>Entreprise de rénovation & décoration — Brabant wallon</span><span data-en>Renovation & decoration company — Walloon Brabant</span></div>
+      <h1 class="reveal in">
+        <span data-fr>Un projet qui<br>devient <em>réalité</em>.</span>
+        <span data-en>A project that<br>becomes <em>real</em>.</span>
+      </h1>
+      <p class="hero-sub reveal in" style="transition-delay:.15s">
+        <span data-fr>Peinture, rénovation et décoration intérieure & extérieure. Plus de 30 ans d'expérience, un savoir-faire artisanal, une écoute attentive de chaque projet.</span>
+        <span data-en>Painting, renovation and interior & exterior decoration. Over 30 years of experience, real craftsmanship, close attention to every project.</span>
+      </p>
+      <div class="hero-cta reveal in" style="transition-delay:.3s">
+        <a href="#contact" class="btn btn-primary"><span data-fr>Demander un devis</span><span data-en>Request a quote</span></a>
+        <a href="#contact" class="btn btn-outline"><span data-fr>Prendre rendez-vous</span><span data-en>Book an appointment</span></a>
+      </div>
+      <div class="hero-scene-tag reveal in" style="transition-delay:.45s"><span class="rec"></span><span id="heroSceneLabel">Extérieur — avant</span></div>
+    </div>
+    <div class="scroll-cue"><span data-fr>Défiler</span><span data-en>Scroll</span><div class="line"></div></div>
+  </div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span data-fr>+30 ans d'expérience</span><span data-en>+30 years of experience</span>
+    <span data-fr>Peinture intérieure & extérieure</span><span data-en>Interior & exterior painting</span>
+    <span data-fr>Rénovation complète</span><span data-en>Full renovation</span>
+    <span data-fr>Décoration sur-mesure</span><span data-en>Bespoke decoration</span>
+    <span data-fr>Brabant wallon & Bruxelles</span><span data-en>Walloon Brabant & Brussels</span>
+    <span data-fr>+30 ans d'expérience</span><span data-en>+30 years of experience</span>
+    <span data-fr>Peinture intérieure & extérieure</span><span data-en>Interior & exterior painting</span>
+    <span data-fr>Rénovation complète</span><span data-en>Full renovation</span>
+    <span data-fr>Décoration sur-mesure</span><span data-en>Bespoke decoration</span>
+    <span data-fr>Brabant wallon & Bruxelles</span><span data-en>Walloon Brabant & Brussels</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow" data-fr>Nos savoir-faire</span><span class="eyebrow" data-en>What we do</span>
+        <h2 class="reveal" data-fr>Trois métiers,<br>une seule exigence.</h2>
+        <h2 class="reveal" data-en>Three trades,<br>one standard.</h2>
+      </div>
+      <p data-fr>Chaque chantier est mené avec la même rigueur : préparation soignée, matériaux de qualité, finitions impeccables.</p>
+      <p data-en>Every site is run with the same rigor: careful preparation, quality materials, flawless finishing.</p>
+    </div>
+    <div class="bento">
+      <div class="bento-card reveal">
+        <div><span class="bento-num">01</span>
+          <h3 data-fr>Peinture</h3><h3 data-en>Painting</h3>
+          <p data-fr>Murs, plafonds, boiseries — finitions nettes en intérieur comme en extérieur.</p>
+          <p data-en>Walls, ceilings, woodwork — clean finishes, indoors and out.</p>
+        </div>
+        <div class="bento-icon">🖌</div>
+      </div>
+      <div class="bento-card reveal" style="transition-delay:.1s">
+        <div><span class="bento-num">02</span>
+          <h3 data-fr>Rénovation</h3><h3 data-en>Renovation</h3>
+          <p data-fr>Rénovation complète ou ciblée — de la structure aux finitions.</p>
+          <p data-en>Full or targeted renovation — from structure to finishing touches.</p>
+        </div>
+        <div class="bento-icon">⚒</div>
+      </div>
+      <div class="bento-card reveal" style="transition-delay:.2s">
+        <div><span class="bento-num">03</span>
+          <h3 data-fr>Décoration</h3><h3 data-en>Decoration</h3>
+          <p data-fr>Aménagement et décoration intérieure sur-mesure, à votre image.</p>
+          <p data-en>Bespoke interior styling and decoration, tailored to you.</p>
+        </div>
+        <div class="bento-icon">✧</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE / AFTER -->
+<section id="realisations" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow" data-fr>Avant / Après</span><span class="eyebrow" data-en>Before / After</span>
+        <h2 class="reveal" data-fr>La preuve, en un<br>glissement.</h2>
+        <h2 class="reveal" data-en>The proof, in<br>one slide.</h2>
+      </div>
+      <p data-fr>Faites glisser le curseur pour voir la transformation. (Interaction réelle sur le site final.)</p>
+      <p data-en>Drag the handle to see the transformation. (Real interaction on the final site.)</p>
+    </div>
+    <div class="ba-wrap reveal">
+      <img class="ba-after" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195022_6c432d05-b418-4041-8995-1a9b927a6f35.png" alt="Façade après rénovation">
+      <img class="ba-before" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_193555_2024596f-c567-4154-961e-f1ed143ef409.png" alt="Façade avant rénovation">
+      <span class="ba-label avant" data-fr>Avant</span><span class="ba-label avant" data-en>Before</span>
+      <span class="ba-label apres" data-fr>Après</span><span class="ba-label apres" data-en>After</span>
+      <div class="ba-handle"></div>
+    </div>
+    <p class="ba-caption" data-fr>Façade extérieure — Brabant wallon</p>
+    <p class="ba-caption" data-en>Exterior facade — Walloon Brabant</p>
+
+    <div class="ba-wrap reveal" style="margin-top:70px;">
+      <img class="ba-after" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_203040_270c9685-7cd3-4dfd-8b25-d757034fa9c1.png" alt="Cuisine après rénovation">
+      <img class="ba-before" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195848_a447e385-0006-4fbf-a780-5871c45eef12.png" alt="Cuisine avant rénovation">
+      <span class="ba-label avant" data-fr>Avant</span><span class="ba-label avant" data-en>Before</span>
+      <span class="ba-label apres" data-fr>Après</span><span class="ba-label apres" data-en>After</span>
+      <div class="ba-handle"></div>
+    </div>
+    <p class="ba-caption" data-fr>Cuisine</p>
+    <p class="ba-caption" data-en>Kitchen</p>
+
+    <div class="ba-wrap reveal" style="margin-top:70px;">
+      <img class="ba-after" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195947_4ef0e5d2-7498-442b-8168-c975bd652582.png" alt="Salle de bain après rénovation">
+      <img class="ba-before" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195924_2e34a5f4-dfb8-4b59-bbd4-26920a4b8205.png" alt="Salle de bain avant rénovation">
+      <span class="ba-label avant" data-fr>Avant</span><span class="ba-label avant" data-en>Before</span>
+      <span class="ba-label apres" data-fr>Après</span><span class="ba-label apres" data-en>After</span>
+      <div class="ba-handle"></div>
+    </div>
+    <p class="ba-caption" data-fr>Salle de bain</p>
+    <p class="ba-caption" data-en>Bathroom</p>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow" data-fr>Portfolio</span><span class="eyebrow" data-en>Portfolio</span>
+        <h2 class="reveal" data-fr>Nos derniers<br>chantiers.</h2>
+        <h2 class="reveal" data-en>Recent<br>projects.</h2>
+      </div>
+      <p data-fr>Une sélection de réalisations récentes en Brabant wallon et à Bruxelles.</p>
+      <p data-en>A selection of recent projects in Walloon Brabant and Brussels.</p>
+    </div>
+    <div class="gallery reveal">
+      <div class="ph"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_193555_2024596f-c567-4154-961e-f1ed143ef409.png" alt="Façade avant"><span class="ph-tag" data-fr>Façade — avant</span><span class="ph-tag" data-en>Facade — before</span></div>
+      <div class="ph"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195022_6c432d05-b418-4041-8995-1a9b927a6f35.png" alt="Façade après"><span class="ph-tag" data-fr>Façade — après</span><span class="ph-tag" data-en>Facade — after</span></div>
+      <div class="ph"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195848_a447e385-0006-4fbf-a780-5871c45eef12.png" alt="Cuisine avant"><span class="ph-tag" data-fr>Cuisine — avant</span><span class="ph-tag" data-en>Kitchen — before</span></div>
+      <div class="ph"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_203040_270c9685-7cd3-4dfd-8b25-d757034fa9c1.png" alt="Cuisine après"><span class="ph-tag" data-fr>Cuisine — après</span><span class="ph-tag" data-en>Kitchen — after</span></div>
+      <div class="ph"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195924_2e34a5f4-dfb8-4b59-bbd4-26920a4b8205.png" alt="Salle de bain avant"><span class="ph-tag" data-fr>Salle de bain — avant</span><span class="ph-tag" data-en>Bathroom — before</span></div>
+      <div class="ph"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195947_4ef0e5d2-7498-442b-8168-c975bd652582.png" alt="Salle de bain après"><span class="ph-tag" data-fr>Salle de bain — après</span><span class="ph-tag" data-en>Bathroom — after</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIMES -->
+<section id="primes">
+  <div class="container">
+    <div class="primes reveal">
+      <span class="eyebrow" style="color:var(--brass)" data-fr>Primes & subventions — à jour 2026</span>
+      <span class="eyebrow" style="color:var(--brass)" data-en>Grants & subsidies — updated 2026</span>
+      <h2 style="margin-bottom:36px;" data-fr>Financer votre rénovation,<br>où que vous soyez.</h2>
+      <h2 style="margin-bottom:36px;" data-en>Funding your renovation,<br>wherever you are.</h2>
+      <div class="primes-grid">
+        <div class="primes-region">
+          <h3 style="font-family:'Fraunces'; font-style:italic; font-size:22px; color:var(--cream); margin-bottom:8px;">Wallonie</h3>
+          <p data-fr style="margin-bottom:22px;">Les primes Habitation restent actives en 2026 pour l'isolation, le chauffage, les châssis et la ventilation — <strong style="color:var(--brass)">demande à introduire avant le 30/09/2026</strong>. Plafond de 50 000 € par logement sur 5 ans.</p>
+          <p data-en style="margin-bottom:22px;">Habitation grants remain active in 2026 for insulation, heating, windows and ventilation — <strong style="color:var(--brass)">apply before 30/09/2026</strong>. Cap of €50,000 per home over 5 years.</p>
+          <div class="primes-list">
+            <div class="item"><span data-fr>Isolation toiture/murs/sols</span><span data-en>Roof/wall/floor insulation</span><span data-fr>Jusqu'à 156 €/m²</span><span data-en>Up to €156/m²</span></div>
+            <div class="item"><span data-fr>Pompe à chaleur</span><span data-en>Heat pump</span><span>Jusqu'à 3 600 €</span></div>
+            <div class="item"><span data-fr>Châssis (Uw ≤ 1,50)</span><span data-en>Windows (Uw ≤ 1.50)</span><span data-fr>Jusqu'à 156 €/m²</span><span data-en>Up to €156/m²</span></div>
+            <div class="item"><span data-fr>Audit logement</span><span data-en>Home audit</span><span>Jusqu'à 456 €</span></div>
+          </div>
+        </div>
+        <div class="primes-region">
+          <h3 style="font-family:'Fraunces'; font-style:italic; font-size:22px; color:var(--cream); margin-bottom:8px;">Bruxelles</h3>
+          <p data-fr style="margin-bottom:22px;">Les primes Rénolution sont suspendues depuis 2025 (aucune nouvelle demande pour des travaux facturés en 2025 ou après). Des alternatives existent en attendant un prêt à taux zéro prévu début 2027.</p>
+          <p data-en style="margin-bottom:22px;">Renolution grants have been suspended since 2025 (no new applications for work invoiced in 2025 or later). Alternatives exist while a zero-interest loan is expected in early 2027.</p>
+          <div class="primes-list">
+            <div class="item"><span>Crédit ECORENO</span><span data-fr>Taux 1,5 % – 2,5 %</span><span data-en>Rate 1.5% – 2.5%</span></div>
+            <div class="item"><span data-fr>TVA réduite pompe à chaleur</span><span data-en>Reduced VAT heat pump</span><span>6 %</span></div>
+            <div class="item"><span data-fr>Prêt Bleu (Energy Protect)</span><span data-en>Blue Loan (Energy Protect)</span><span data-fr>Taux avantageux</span><span data-en>Preferential rate</span></div>
+            <div class="item"><span data-fr>Prêt à taux zéro</span><span data-en>Zero-interest loan</span><span data-fr>Dès 2027 (annoncé)</span><span data-en>From 2027 (announced)</span></div>
+          </div>
+        </div>
+      </div>
+      <p data-fr style="margin-top:30px; font-size:12px; color:rgba(244,237,225,0.45);">Informations données à titre indicatif, à vérifier au moment de la demande — dernière mise à jour août 2026.</p>
+      <p data-en style="margin-top:30px; font-size:12px; color:rgba(244,237,225,0.45);">Information provided for guidance, to be confirmed at application time — last updated August 2026.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="avis">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow" data-fr>Ils nous ont fait confiance</span><span class="eyebrow" data-en>Trusted by</span>
+        <h2 class="reveal" data-fr>La parole à<br>nos clients.</h2>
+        <h2 class="reveal" data-en>In our clients'<br>words.</h2>
+      </div>
+    </div>
+    <div class="testi-row">
+      <div class="testi reveal">
+        <div class="stars">★★★★★</div>
+        <p data-fr>"Travail soigné, délais respectés. On sent l'expérience du métier."</p>
+        <p data-en>"Careful work, deadlines respected. You can feel the experience."</p>
+        <div class="who" data-fr>M. Dubois — Waterloo</div><div class="who" data-en>Mr. Dubois — Waterloo</div>
+      </div>
+      <div class="testi reveal" style="transition-delay:.1s">
+        <div class="stars">★★★★★</div>
+        <p data-fr>"Une équipe à l'écoute, du premier rendez-vous à la dernière touche de peinture."</p>
+        <p data-en>"A team that listens, from the first meeting to the final coat of paint."</p>
+        <div class="who" data-fr>C. Lambert — Genval</div><div class="who" data-en>C. Lambert — Genval</div>
+      </div>
+      <div class="testi reveal" style="transition-delay:.2s">
+        <div class="stars">★★★★★</div>
+        <p data-fr>"Nous avons été accompagnés pour les primes rénovation, un vrai plus."</p>
+        <p data-en>"We were guided through the renovation grants — a real plus."</p>
+        <div class="who" data-fr>S. Petit — Wavre</div><div class="who" data-en>S. Petit — Wavre</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow" data-fr>Contact</span><span class="eyebrow" data-en>Contact</span>
+        <h2 class="reveal" data-fr>Parlons de<br>votre projet.</h2>
+        <h2 class="reveal" data-en>Let's talk about<br>your project.</h2>
+      </div>
+    </div>
+    <div class="contact-wrap reveal">
+      <div class="contact-form">
+        <div class="field"><label data-fr>Nom complet</label><label data-en>Full name</label><input type="text" placeholder="Jean Dupont"></div>
+        <div class="field-row">
+          <div class="field"><label data-fr>Téléphone</label><label data-en>Phone</label><input type="text" placeholder="04 76 95 27 87"></div>
+          <div class="field"><label>Email</label><input type="text" placeholder="vous@email.com"></div>
+        </div>
+        <div class="field"><label data-fr>Type de projet</label><label data-en>Project type</label>
+          <select><option data-fr>Peinture</option><option data-en>Painting</option><option data-fr>Rénovation</option><option data-fr>Décoration</option></select>
+        </div>
+        <div class="field"><label data-fr>Message</label><label data-en>Message</label><textarea rows="3" placeholder="Décrivez votre projet..."></textarea></div>
+        <div class="upload-box"><span data-fr>📎 Glissez des photos de votre projet (optionnel)</span><span data-en>📎 Drop photos of your project (optional)</span></div>
+        <a href="#" class="btn btn-primary" style="width:100%; justify-content:center;"><span data-fr>Envoyer ma demande</span><span data-en>Send my request</span></a>
+      </div>
+      <div class="contact-info">
+        <span class="eyebrow" style="color:var(--brass)" data-fr>Coordonnées</span><span class="eyebrow" style="color:var(--brass)" data-en>Contact details</span>
+        <div class="info-item"><div class="ico">📍</div><div><div class="lbl" data-fr>Zone desservie</div><div class="lbl" data-en>Service area</div>Brabant wallon & Bruxelles</div></div>
+        <div class="info-item"><div class="ico">📞</div><div><div class="lbl" data-fr>Téléphone</div><div class="lbl" data-en>Phone</div>0476 95 27 87</div></div>
+        <div class="info-item"><div class="ico">💬</div><div><div class="lbl">WhatsApp</div><a href="#">wa.me/32476952787</a></div></div>
+        <div class="info-item"><div class="ico">f</div><div><div class="lbl">Facebook</div>@renovationbatiment1</div></div>
+        <div class="mini-cal">
+          <div class="mini-cal-head"><span data-fr>Prendre rendez-vous</span><span data-en>Book a slot</span><span>Août 2026</span></div>
+          <div class="mini-cal-grid">
+            <div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div><div>D</div>
+            <div>10</div><div>11</div><div class="active">12</div><div>13</div><div>14</div><div>15</div><div>16</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <a href="#" class="logo">Alberto<span class="dot" style="color:var(--clay)">·</span>Deco</a>
+        <p data-fr>Entreprise de rénovation et peinture en bâtiment — Brabant wallon. Plus de 30 ans d'expérience au service de vos projets.</p>
+        <p data-en>Building renovation and painting company — Walloon Brabant. Over 30 years of experience serving your projects.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-fr>Navigation</h4><h4 data-en>Navigation</h4>
+        <a href="#services">Services</a><a href="#realisations" data-fr>Réalisations</a><a href="#realisations" data-en>Projects</a><a href="#primes" data-fr>Primes</a><a href="#primes" data-en>Grants</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-fr>Contact</h4><h4 data-en>Contact</h4>
+        <a href="#">0476 95 27 87</a><a href="#">Facebook</a><a href="#">WhatsApp</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-fr>Langue</h4><h4 data-en>Language</h4>
+        <a href="#" onclick="setLang('fr')">Français</a><a href="#" onclick="setLang('en')">English</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-fr>© 2026 Alberto Deco — Tous droits réservés</span><span data-en>© 2026 Alberto Deco — All rights reserved</span>
+      <span data-fr>Brabant wallon, Belgique</span><span data-en>Walloon Brabant, Belgium</span>
+    </div>
+  </div>
+</footer>
+
+<div class="chat-bubble">💬</div>
+<div class="chat-tag" data-fr>Une question ? Discutons.</div>
+<div class="chat-tag" data-en>Questions? Let's chat.</div>
+
+<script>
+  // header scroll state
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // hero — scroll-driven cinematic wipe sequence (auto, no click required)
+  const heroScroll = document.getElementById('heroScroll');
+  const heroScenes = Array.from(document.querySelectorAll('.hero-scene'));
+  const heroBgZoom = document.getElementById('heroBgZoom');
+  const heroSceneLabel = document.getElementById('heroSceneLabel');
+  const sceneNames = {
+    fr: [['Extérieur — avant','Extérieur — après'],['Cuisine — avant','Cuisine — après'],['Salle de bain — avant','Salle de bain — après']],
+    en: [['Exterior — before','Exterior — after'],['Kitchen — before','Kitchen — after'],['Bathroom — before','Bathroom — after']]
+  };
+  function updateHero(){
+    const total = heroScroll.offsetHeight - window.innerHeight;
+    const rect = heroScroll.getBoundingClientRect();
+    let progress = total > 0 ? (-rect.top / total) : 0;
+    progress = Math.max(0, Math.min(1, progress));
+
+    // slow cinematic zoom across the whole sequence
+    if(heroBgZoom) heroBgZoom.style.transform = `scale(${1 + progress * 0.07})`;
+
+    const sceneCount = heroScenes.length;
+    const raw = progress * sceneCount;
+    const sceneIdx = Math.min(sceneCount - 1, Math.floor(raw));
+    const wipeProgress = Math.max(0, Math.min(1, raw - sceneIdx)); // 0 = avant, 1 = après, within this scene
+
+    heroScenes.forEach((scene, i) => scene.classList.toggle('active', i === sceneIdx));
+
+    const beforeImg = document.getElementById('sceneBefore' + sceneIdx);
+    if(beforeImg){
+      const pct = 100 - (wipeProgress * 100); // % of "avant" still visible, left to right
+      beforeImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    }
+
+    const lang = document.documentElement.classList.contains('en') ? 'en' : 'fr';
+    if(heroSceneLabel) heroSceneLabel.textContent = sceneNames[lang][sceneIdx][wipeProgress < 0.5 ? 0 : 1];
+  }
+  window.addEventListener('scroll', updateHero, {passive:true});
+  window.addEventListener('resize', updateHero);
+  updateHero();
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); } });
+  }, {threshold:0.15});
+  revealEls.forEach(el => io.observe(el));
+
+  // language toggle
+  function setLang(lang, btn){
+    document.documentElement.classList.toggle('en', lang === 'en');
+    document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.remove('active'));
+    if(btn){ btn.classList.add('active'); }
+    else { document.querySelectorAll('.lang-toggle button')[lang==='en'?1:0].classList.add('active'); }
+    if(typeof updateHero === 'function') updateHero();
+  }
+
+  // before/after sliders (one per scene)
+  document.querySelectorAll('.ba-wrap').forEach(wrap => {
+    const before = wrap.querySelector('.ba-before');
+    const handle = wrap.querySelector('.ba-handle');
+    let dragging = false;
+    function setSlider(x){
+      const rect = wrap.getBoundingClientRect();
+      let pct = ((x - rect.left) / rect.width) * 100;
+      pct = Math.max(0, Math.min(100, pct));
+      before.style.clipPath = `inset(0 ${100-pct}% 0 0)`;
+      handle.style.left = pct + '%';
+    }
+    wrap.addEventListener('mousedown', e => { dragging = true; setSlider(e.clientX); });
+    window.addEventListener('mousemove', e => { if(dragging) setSlider(e.clientX); });
+    window.addEventListener('mouseup', () => dragging = false);
+    wrap.addEventListener('touchstart', e => setSlider(e.touches[0].clientX));
+    wrap.addEventListener('touchmove', e => setSlider(e.touches[0].clientX));
+  });
+</script>
+
+</body>
+</html>
