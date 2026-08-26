@@ -85,12 +85,8 @@
     padding-top:120px;
   }
   .hero-bg{ position:absolute; inset:0; z-index:0; overflow:hidden;}
-  .hero-bg-zoom{ position:absolute; inset:-3%; will-change:transform;}
-  .hero-scene{ position:absolute; inset:0; opacity:0; transition:opacity .35s ease;}
-  .hero-scene.active{ opacity:1;}
-  .hero-scene img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
-  .hero-scene .scene-after{ z-index:0;}
-  .hero-scene .scene-before{ z-index:1; will-change:clip-path;}
+  .hero-bg-zoom{ position:absolute; inset:0; will-change:transform;}
+  .hero-video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:var(--charcoal);}
   .hero-scrim{
     position:absolute; inset:0; z-index:1;
     background:linear-gradient(180deg, rgba(23,19,16,0.6), rgba(23,19,16,0.28) 45%, rgba(23,19,16,0.7));
@@ -307,18 +303,9 @@
   <div class="hero-sticky">
     <div class="hero-bg">
       <div class="hero-bg-zoom" id="heroBgZoom">
-        <div class="hero-scene active" data-scene="0">
-          <img class="scene-after" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195022_6c432d05-b418-4041-8995-1a9b927a6f35.png" alt="Extérieur après">
-          <img class="scene-before" id="sceneBefore0" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_193555_2024596f-c567-4154-961e-f1ed143ef409.png" alt="Extérieur avant">
-        </div>
-        <div class="hero-scene" data-scene="1">
-          <img class="scene-after" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_203040_270c9685-7cd3-4dfd-8b25-d757034fa9c1.png" alt="Cuisine après">
-          <img class="scene-before" id="sceneBefore1" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195848_a447e385-0006-4fbf-a780-5871c45eef12.png" alt="Cuisine avant">
-        </div>
-        <div class="hero-scene" data-scene="2">
-          <img class="scene-after" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195947_4ef0e5d2-7498-442b-8168-c975bd652582.png" alt="Salle de bain après">
-          <img class="scene-before" id="sceneBefore2" src="https://d8j0ntlcm91z4.cloudfront.net/user_36AKnFfopVT5BznPY0hpSUF8B4c/hf_20260815_195924_2e34a5f4-dfb8-4b59-bbd4-26920a4b8205.png" alt="Salle de bain avant">
-        </div>
+        <video id="heroVideo" class="hero-video" muted playsinline preload="auto" poster="hero-video-poster.jpg">
+          <source src="hero-video.mp4" type="video/mp4">
+        </video>
       </div>
       <div class="hero-scrim"></div>
     </div>
@@ -339,7 +326,7 @@
         <a href="#contact" class="btn btn-primary"><span data-fr>Demander un devis</span><span data-en>Request a quote</span><span data-nl>Offerte aanvragen</span></a>
         <a href="#contact" class="btn btn-outline"><span data-fr>Prendre rendez-vous</span><span data-en>Book an appointment</span><span data-nl>Afspraak maken</span></a>
       </div>
-      <div class="hero-scene-tag reveal in" style="transition-delay:.45s"><span class="rec"></span><span id="heroSceneLabel">Extérieur — avant</span></div>
+      <div class="hero-scene-tag reveal in" style="transition-delay:.45s"><span class="rec"></span><span data-fr>En chantier — Belgique</span><span data-en>On site — Belgium</span><span data-nl>Op locatie — België</span></div>
     </div>
     <div class="scroll-cue"><span data-fr>Défiler</span><span data-en>Scroll</span><span data-nl>Scrollen</span><div class="line"></div></div>
   </div>
@@ -657,40 +644,33 @@
     header.classList.toggle('scrolled', window.scrollY > 40);
   });
 
-  // hero — scroll-driven cinematic wipe sequence (auto, no click required)
+  // hero — scroll-scrubbed video (scrolling drives video.currentTime, no autoplay)
   const heroScroll = document.getElementById('heroScroll');
-  const heroScenes = Array.from(document.querySelectorAll('.hero-scene'));
-  const heroBgZoom = document.getElementById('heroBgZoom');
-  const heroSceneLabel = document.getElementById('heroSceneLabel');
-  const sceneNames = {
-    fr: [['Extérieur — avant','Extérieur — après'],['Cuisine — avant','Cuisine — après'],['Salle de bain — avant','Salle de bain — après']],
-    en: [['Exterior — before','Exterior — after'],['Kitchen — before','Kitchen — after'],['Bathroom — before','Bathroom — after']],
-    nl: [['Buitenkant — voor','Buitenkant — na'],['Keuken — voor','Keuken — na'],['Badkamer — voor','Badkamer — na']]
-  };
+  const heroVideo = document.getElementById('heroVideo');
+  let heroVideoDuration = 0;
+  let heroVideoReady = false;
+  if(heroVideo){
+    heroVideo.addEventListener('loadedmetadata', () => {
+      heroVideoDuration = heroVideo.duration || 0;
+      heroVideoReady = true;
+      updateHero();
+    });
+    // force metadata (and first frame) to load even without autoplay
+    heroVideo.load();
+  }
   function updateHero(){
     const total = heroScroll.offsetHeight - window.innerHeight;
     const rect = heroScroll.getBoundingClientRect();
     let progress = total > 0 ? (-rect.top / total) : 0;
     progress = Math.max(0, Math.min(1, progress));
 
-    // slow cinematic zoom across the whole sequence
-    if(heroBgZoom) heroBgZoom.style.transform = `scale(${1 + progress * 0.07})`;
-
-    const sceneCount = heroScenes.length;
-    const raw = progress * sceneCount;
-    const sceneIdx = Math.min(sceneCount - 1, Math.floor(raw));
-    const wipeProgress = Math.max(0, Math.min(1, raw - sceneIdx)); // 0 = avant, 1 = après, within this scene
-
-    heroScenes.forEach((scene, i) => scene.classList.toggle('active', i === sceneIdx));
-
-    const beforeImg = document.getElementById('sceneBefore' + sceneIdx);
-    if(beforeImg){
-      const pct = 100 - (wipeProgress * 100); // % of "avant" still visible, left to right
-      beforeImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    if(heroVideo && heroVideoReady && heroVideoDuration > 0){
+      const target = progress * heroVideoDuration;
+      // avoid redundant seeks (some browsers throttle/hitch on identical currentTime writes)
+      if(Math.abs(heroVideo.currentTime - target) > 0.03){
+        heroVideo.currentTime = target;
+      }
     }
-
-    const lang = document.documentElement.classList.contains('en') ? 'en' : (document.documentElement.classList.contains('nl') ? 'nl' : 'fr');
-    if(heroSceneLabel) heroSceneLabel.textContent = sceneNames[lang][sceneIdx][wipeProgress < 0.5 ? 0 : 1];
   }
   window.addEventListener('scroll', updateHero, {passive:true});
   window.addEventListener('resize', updateHero);
