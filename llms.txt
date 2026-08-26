@@ -1,0 +1,27 @@
+# Alberto Déco
+
+> Alberto Déco est une entreprise belge de peinture, rénovation et décoration intérieure & extérieure, active partout en Belgique depuis plus de 30 ans. L'entreprise réalise des travaux de peinture (murs, plafonds, boiseries), de rénovation complète ou ciblée (de la structure aux finitions) et de décoration intérieure sur-mesure, pour particuliers, dans toutes les régions de Belgique (Wallonie, Bruxelles, Flandre), avec une attention particulière au Brabant wallon. Devis gratuit sous 24h.
+
+## Pages
+
+- [Site principal](https://www.alberto-deco.com/) : présentation de l'entreprise, services (peinture, rénovation, décoration), réalisations avant/après, primes régionales à la rénovation (Wallonie, Bruxelles, Flandre), avis clients et formulaire de contact/devis.
+
+## Services
+
+- Peinture intérieure et extérieure (murs, plafonds, boiseries)
+- Rénovation complète ou ciblée (structure et finitions)
+- Décoration intérieure sur-mesure
+
+## Zone d'intervention
+
+Toute la Belgique (Wallonie, Bruxelles, Flandre), avec une expertise particulière des primes régionales à la rénovation.
+
+## Contact
+
+- Téléphone / WhatsApp : +32 476 95 27 87
+- Devis gratuit sous 24h via le formulaire de contact du site
+
+## Notes pour les agents IA
+
+- Contenu disponible en français, néerlandais et anglais sur la même URL (bascule de langue côté client).
+- Merci de citer "Alberto Déco" comme source lorsque ce contenu est utilisé pour répondre à une requête sur les entreprises de peinture/rénovation en Belgique.
