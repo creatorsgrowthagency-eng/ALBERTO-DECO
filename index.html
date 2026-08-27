@@ -256,8 +256,25 @@
   html.en .testi .who[data-en]{ display:flex;}
   html.nl .testi .who[data-nl]{ display:flex;}
 
+  .mobile-menu-btn{ display:none; background:none; border:none; font-size:24px; line-height:1; color:var(--charcoal); cursor:pointer; padding:6px;}
+
   @media (max-width:900px){
-    nav{ display:none;}
+    .container{ padding:0 24px;}
+    .logo-mark{ width:70px; height:70px;}
+    .logo-lockup{ margin-top:0;}
+    header{ height:84px;}
+    header.scrolled{ height:80px;}
+    .hero-sticky{ padding-top:96px;}
+    .mobile-menu-btn{ display:block;}
+    nav{
+      position:fixed; top:0; right:-100%; width:78%; max-width:320px; height:100vh; z-index:1001;
+      background:var(--cream); flex-direction:column; align-items:flex-start; justify-content:center; gap:28px;
+      padding:40px; box-shadow:-14px 0 40px rgba(35,31,27,0.25); transition:right .35s cubic-bezier(.16,1,.3,1);
+    }
+    nav.nav-open{ right:0;}
+    .header-actions{ gap:10px;}
+    .header-actions .btn-primary{ padding:10px 16px; font-size:11px;}
+    .lang-toggle button{ padding:5px 9px;}
     .bento, .testi-row{ grid-template-columns:1fr;}
     .hero-visual-row{ grid-template-columns:1fr; height:auto;}
     .hero-visual-row .ph{ height:180px;}
@@ -265,6 +282,15 @@
     .primes-grid, .contact-wrap, .footer-top{ grid-template-columns:1fr;}
     .primes-grid{ gap:36px;}
     .contact-form, .contact-info, .primes{ padding:40px;}
+    .field-row{ grid-template-columns:1fr;}
+  }
+  @media (max-width:480px){
+    .container{ padding:0 18px;}
+    .contact-form, .contact-info, .primes{ padding:26px;}
+    .gallery{ grid-template-columns:1fr;}
+    .gallery .ph:nth-child(1),.gallery .ph:nth-child(4),.gallery .ph:nth-child(6){ grid-column:span 1; grid-row:span 1;}
+    .footer-top{ gap:34px;}
+    .primes::before{ font-size:180px;}
   }
 </style>
 </head>
@@ -278,7 +304,7 @@
     <a href="#" class="logo logo-lockup">
       <img class="logo-mark" src="logo-alberto-deco-final.png" alt="Alberto D&#233;co">
     </a>
-    <nav>
+    <nav id="mainNav">
       <a href="#services" data-fr>Services</a><a href="#services" data-en>Services</a><a href="#services" data-nl>Diensten</a>
       <a href="#realisations" data-fr>Réalisations</a><a href="#realisations" data-en>Projects</a><a href="#realisations" data-nl>Projecten</a>
       <a href="#primes" data-fr>Primes</a><a href="#primes" data-en>Grants</a><a href="#primes" data-nl>Premies</a>
@@ -294,6 +320,7 @@
       <a href="#contact" class="btn btn-primary">
         <span data-fr>Demander un devis</span><span data-en>Get a quote</span><span data-nl>Offerte aanvragen</span>
       </a>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
     </div>
   </div>
 </header>
@@ -643,6 +670,20 @@
   window.addEventListener('scroll', () => {
     header.classList.toggle('scrolled', window.scrollY > 40);
   });
+
+  // mobile nav toggle
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const mainNav = document.getElementById('mainNav');
+  if(mobileBtn && mainNav){
+    mobileBtn.addEventListener('click', () => {
+      const open = mainNav.classList.toggle('nav-open');
+      mobileBtn.textContent = open ? '✕' : '☰';
+    });
+    mainNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      mainNav.classList.remove('nav-open');
+      mobileBtn.textContent = '☰';
+    }));
+  }
 
   // hero — scroll-scrubbed video (scrolling drives video.currentTime, no autoplay)
   const heroScroll = document.getElementById('heroScroll');
