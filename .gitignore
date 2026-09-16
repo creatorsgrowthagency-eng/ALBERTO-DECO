@@ -1,0 +1,5 @@
+# Identifiants (jamais dans git — local uniquement)
+CREDENTIALS.local.md
+
+# macOS
+.DS_Store

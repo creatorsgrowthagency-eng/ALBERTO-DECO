@@ -2,18 +2,20 @@
 
 > Source de vérité unique du projet. Chaque session (Cowork, Claude Code local, VS Code) doit LIRE ce fichier au démarrage et le METTRE À JOUR à la fin.
 
-**Dernière mise à jour :** 2026-08-26 — session Cowork (génération des visuels/vidéo hero avec avatar Alberto Deco + équipe, intégration scroll-scrub dans la maquette)
-**Statut global :** 🟡 En cours — Maquette HTML (`index.html`) très avancée visuellement (logo final, charte bleu marine, FR/NL/EN, section Primes à jour, hero vidéo scroll-scrub intégré) et en ligne sur alberto-deco.com ; développement du site final (Next.js/Tailwind) pas commencé
+**Dernière mise à jour :** 2026-08-30 — session Cowork (conception du système de gestion de contact/devis/chantier, scope V1 gelé, roadmap V2-V5 créée)
+**Statut global :** 🟡 En cours — Maquette HTML (`index.html`) très avancée visuellement (logo final, charte bleu marine, FR/NL/EN, section Primes à jour, hero vidéo scroll-scrub intégré) et en ligne sur alberto-deco.com ; développement du site final (Next.js/Tailwind) pas commencé. **Nouveau chantier ouvert (30/08/2026)** : conception d'un système de gestion de contact → devis → suivi de chantier (voir section 12) — V1 spécifié, fichiers de base créés, roadmap V2-V5 documentée dans `ROADMAP.md`.
 
 ---
 
 ## 1. Objectif du projet
 
 Site vitrine bilingue (FR/EN) one-page pour Alberto Deco (rénovation/peinture, Brabant wallon, Belgique).
-- **V1** : site vitrine + hero vidéo motion + formulaire contact + booking + WhatsApp + chatbot + SEO
-- **V2** : devis IA, portail client, CRM, agent IA photo→visuel→devis
+- **V1** : site vitrine + hero vidéo motion + formulaire contact/devis unique + notification Alberto (WhatsApp/Telegram) + validation humaine + réponse email IA + chatbot + SEO + base de connaissances (KB) initiale
+- **V2+** : système complet de gestion de chantier (devis → acompte 50% → suivi financier → achat matériel → planning ouvriers → suivi photo chantier). Détail complet des phases V2 à V5 dans `ROADMAP.md`.
 
 > Note : la maquette (`index.html`) est désormais trilingue **FR/NL/EN** (le néerlandais a été ajouté — voir section 4), à reporter dans le site final V1/V2.
+
+> Le scope du projet Alberto Deco a été élargi le 30/08/2026 : au-delà du site vitrine, un système d'automatisation contact→devis→gestion de chantier est en cours de conception (voir section 12 et `ROADMAP.md`).
 
 ## 2. Stack technique décidée
 
@@ -111,10 +113,10 @@ Plafond fixé : 97 crédits pour tout le site. Dépense estimée à date : image
 
 ## 8. Ressources gratuites à intégrer (fonctionnalités, pas encore fait)
 
-- Formulaire contact → Next.js + Resend
-- Booking → Cal.com (embed + sync Google Calendar)
-- WhatsApp click-to-chat → lien `wa.me`
-- Chatbot IA → github.com/Open-Chat-Widget/openchatwidget
+- ~~Formulaire contact → Next.js + Resend~~ — **remplacé** par la stack 100% gratuite/open source détaillée en section 12 : PocketBase (backend formulaire, auto-hébergé sur le VPS easyPanel existant) + n8n (déjà sur le VPS) + Open Router (déjà en place) + SendGrid (email) + Supabase (archivage)
+- Booking → Cal.com (embed + sync Google Calendar) — à intégrer dans le workflow n8n de notification (lien agenda envoyé à Alberto avec chaque notification, voir section 12)
+- WhatsApp/Telegram → notification + échange vocal avec Alberto pour valider/adapter chaque réponse avant envoi (voir section 12, workflow V1)
+- Chatbot IA → `@n8n/chat` (widget officiel n8n, compatible HTML vanilla) + mini-RAG maison via webhook n8n, connecté à la KB — décision détaillée dans `V1_SPECIFICATIONS.md` section 5.5 (openchatwidget écarté)
 - ~~SEO/GEO (visibilité LLM) → fichier `llms.txt` + schema.org~~ — **fait sur la maquette**, voir section 4
 
 ## 9. En attente de décision / brainstorm
@@ -127,10 +129,76 @@ Plafond fixé : 97 crédits pour tout le site. Dépense estimée à date : image
 
 - rediumvex/ai-video-generator-claude (skills prompts Seedance) — à installer plus tard pour un autre projet
 
+## 12. Système de gestion contact → devis → suivi de chantier (nouveau chantier, ouvert le 30/08/2026)
+
+### 12.1 Contexte
+
+Au-delà du site vitrine, Alberto Deco a besoin d'un système qui couvre tout le cycle de vie d'un chantier : premier contact client → devis → acceptation + acompte (50%) → achat matériel → planning ouvriers → suivi photo du chantier → finalisation. Stack de départ déjà en place chez Alberto : **n8n** (VPS easyPanel) + **Open Router** (accès LLM). Contrainte forte exprimée par Paolo : **100% gratuit / open source**, pas de service payant type FormTo.
+
+### 12.2 Scope V1 — GELÉ (Elon Musk scope minimization appliqué)
+
+**Inclus en V1 :**
+- Formulaire unique de contact/devis (pas deux formulaires séparés) — champs standards + upload photo **optionnel**. Sans photo → simple message de contact. Avec photo → indique une demande d'estimation/recommandation (mais l'estimation de prix elle-même et les recommandations matériaux sont **hors V1**, voir 12.4 et `ROADMAP.md`)
+- Backend formulaire : **PocketBase** auto-hébergé sur le VPS easyPanel (gratuit, open source) — voir `POCKETBASE_SETUP_GUIDE.md`
+- Workflow d'automatisation : **n8n** (déjà en place) — voir `n8n-workflow-pocketbase.json` et le schéma visuel (Artifact publié en session, voir historique de conversation Cowork du 30/08/2026)
+- **Aucune réponse automatique envoyée sans validation humaine.** Le flux réel validé avec Paolo :
+  1. Client soumet le formulaire → PocketBase → webhook n8n
+  2. n8n génère une proposition de réponse (IA via Open Router)
+  3. **Notification courte** envoyée à Alberto sur WhatsApp (et si possible Telegram en parallèle — à confirmer si Alberto utilise Telegram) : juste "tu as un nouveau message" (pas le contenu complet, pour ne pas le surcharger)
+  4. Alberto répond (ex. "ok, je suis là") pour déclencher la suite
+  5. Le système lui présente ensuite l'info **question par question** (pas un pavé de texte) et peut recevoir sa réponse **en vocal** (message vocal WhatsApp) — à valider techniquement/niveau coût (transcription vocale)
+  6. Chaque notification inclut un **lien vers l'agenda d'Alberto** (Cal.com) pour qu'il puisse vérifier ses disponibilités en répondant, si un rendez-vous est à proposer
+  7. Une fois la réponse validée/adaptée par Alberto → envoi effectif de l'email au client (SendGrid)
+- Chatbot basique sur le site, connecté à la base de connaissances (KB) — voir 12.3
+- Stockage/archivage des soumissions (Supabase) — y compris les photos, même si elles ne sont pas encore exploitées automatiquement (préparation V2)
+
+**Explicitement exclu de V1 (→ V2+, voir `ROADMAP.md`) :**
+- Landing page dédiée cachée pour les réseaux sociaux (on linke directement vers le formulaire pour l'instant)
+- Estimation de prix automatique (nécessite recherche de prix du marché + variable frais de déplacement/essence + variable région)
+- Recommandations de matériaux/couleurs basées sur le stock réel du fournisseur d'Alberto Deco (nécessite scraping du catalogue fournisseur — papier ou en ligne — pour constituer une KB matériaux ; pas encore fait)
+- Tout le système de gestion de chantier post-devis (acompte, suivi financier, achat matériel, planning ouvriers, suivi photo chantier) — c'est en réalité un **ERP chantier complet** de bout en bout (signature → exécution → clôture), documenté phase par phase dans `ROADMAP.md`
+
+### 12.3 Assumptions critiques V1 (et mitigations précisées par Paolo le 30/08/2026)
+
+| # | Assumption | Risque si elle échoue | Mitigation / précision |
+|---|---|---|---|
+| A1 | Alberto peut valider/adapter chaque réponse rapidement sans que ce soit une charge | Backlog de messages, mauvaise UX client, Alberto abandonne l'outil | Notification WhatsApp **courte** (pas de pavé de texte), déclenchement à la demande d'Alberto, présentation **question par question**, réponse possible **en vocal** (à valider techniquement le coût de la transcription vocale). Lien agenda inclus systématiquement. Double canal WhatsApp + Telegram à confirmer selon usage réel d'Alberto. |
+| A2 | La base de connaissances (KB) initiale est prête avant le lancement du chatbot | Chatbot vide/inutile au lancement | Atelier avec Alberto Deco basé sur un questionnaire préparé (voir `KB_WORKSHOP_QUESTIONNAIRE.md`), transcript de l'atelier → première version de la KB |
+| A3 | La stack technique (n8n + PocketBase + Open Router + SendGrid) tient la charge et reste stable | Workflow qui casse → clients/Alberto pas notifiés | Test de charge (soumissions simultanées) avant mise en prod, à planifier en fin de Phase 4 (implémentation) |
+
+### 12.4 Fichiers créés pour ce chantier (dans ce dossier)
+
+- Formulaire de contact — **intégré directement dans `WEBSITE /index.html`** (section `#contact`), plutôt qu'un fichier `contact-form.html` séparé comme prévu initialement (plus simple à maintenir, un seul fichier HTML pour tout le site). Connecté à PocketBase via `fetch`/`FormData` en JS vanilla (voir T3, section 12.5bis).
+- `POCKETBASE_SETUP_GUIDE.md` — guide d'installation PocketBase sur le VPS easyPanel (10 étapes) — recréé le 16/09/2026 (perdu car jamais commité lors de la session Cowork du 30/08)
+- `n8n-workflow-pocketbase.json` — workflow n8n complet (webhook → transformation → IA → notification → email → stockage), à adapter pour intégrer le flux de validation humaine détaillé en 12.2 (notification courte + question par question + vocal — **pas encore reflété dans ce JSON**, à mettre à jour à la prochaine session sur ce sujet)
+- `n8n-schema.html` — schéma visuel du workflow (publié en Artifact pendant la session Cowork du 30/08/2026)
+- `ROADMAP.md` — roadmap détaillée V2 à V5 (système de gestion de chantier complet)
+- `KB_WORKSHOP_QUESTIONNAIRE.md` — questionnaire pour l'atelier de constitution de la base de connaissances avec Alberto Deco
+
+### 12.5 Spécifications V1 — Phase 2-3 (Spec Kit) TERMINÉE
+
+La spécification complète (requirements, architecture, modèle de données, questions techniques ouvertes, task list avec owner/input/output/success condition) est rédigée dans **`V1_SPECIFICATIONS.md`** — 15 tâches (T1 à T15), aucune ne dépasse le scope V1 gelé en 12.2.
+
+**Prochaines étapes (Phase 4 — Implémentation) :**
+1. ~~T1-T3 : installer PocketBase, étendre le schéma, intégrer le formulaire au site (avec upload photo)~~ **TERMINÉ le 16/09/2026** — voir 12.5bis ci-dessous
+2. T4-T5 : rechercher les solutions open source pour notification WhatsApp/Telegram bidirectionnelle + transcription vocale (questions techniques en `V1_SPECIFICATIONS.md` section 5)
+3. T6-T8 : adapter le workflow n8n complet (notification courte → validation séquentielle → envoi), confirmer Telegram avec Alberto, intégrer Cal.com
+4. T9-T12 : atelier KB avec Alberto (`KB_WORKSHOP_QUESTIONNAIRE.md`), structurer la KB, la connecter au prompt IA et au chatbot
+5. T13-T14 : tests de charge et test réel avec Alberto (assumptions A1/A3)
+6. T15 : mise à jour finale de ce fichier, puis Phase 5 (audit design — TriggerDesignHeuristics)
+7. Une fois V1 stable et en usage réel : relancer une session de minimisation de scope (Phase 0b) pour V2, en s'appuyant sur `ROADMAP.md`
+
+### 12.5bis T1-T3 réalisés (16/09/2026)
+
+- **T1** — PocketBase installé sur EasyPanel (service `pocketbase` du projet `personnal_automation`, image `ghcr.io/muchobien/pocketbase:latest`), volume persistant monté sur `/pb_data`, domaine `https://personnal-automation-pocketbase.yeczg2.easypanel.host` avec SSL. Compte superuser créé. **Piège rencontré et documenté dans `CREDENTIALS.local.md`** : la commande `pocketbase superuser upsert` doit toujours recevoir `--dir=/pb_data` explicitement, sinon elle écrit dans un dossier non persistant et donne une fausse impression de succès.
+- **T2** — Collection `formulaires` créée avec tous les champs du modèle de données (section 4 de `V1_SPECIFICATIONS.md`). Règles API : `Create` ouvert à tous (formulaire public), `List/View/Update/Delete` verrouillés aux superusers uniquement. **Point d'attention pour la suite (n8n, T6)** : le champ statut s'appelle `Statut` (S majuscule) dans PocketBase, pas `statut` — à utiliser tel quel dans tous les workflows/intégrations futures.
+- **T3** — Formulaire intégré dans `WEBSITE /index.html` (section `#contact`), remplaçant le mockup statique : champs réels (`nom`, `phone`, `email`, `service`, `message`, `photos` multi-fichiers, `Statut` en hidden field), soumission en JS vanilla (`fetch` + `FormData`) vers `POST /api/collections/formulaires/records`, messages de succès/erreur multilingues (FR/EN/NL, même système que le reste du site). Testé end-to-end via `curl` (création + suppression d'un enregistrement de test) — fonctionnel confirmé.
+
 ## 11. Journal des sessions
 
 | Date | Session | Résumé |
 |---|---|---|
+| 2026-08-30 | Cowork | Conception du système de gestion contact → devis → suivi de chantier. Pivot du formulaire de contact vers une stack 100% gratuite/open source (PocketBase + n8n existant + Open Router existant + SendGrid + Supabase) suite au refus explicite d'une solution payante (FormTo). Création de `contact-form.html`, `POCKETBASE_SETUP_GUIDE.md`, `n8n-workflow-pocketbase.json`, schéma visuel `n8n-schema.html` (publié en Artifact). Application d'un scope minimization (approche "first principles") : scope V1 gelé sur formulaire unique + notification/validation humaine (WhatsApp/Telegram, question par question, réponse vocale possible, lien agenda) + chatbot + KB initiale — landing page dédiée, estimation de prix automatique et recommandations matériaux (stock fournisseur) explicitement repoussées à V2+. Découverte en cours de conversation que le besoin réel de Paolo va bien au-delà du formulaire de contact : un ERP chantier complet (devis → acompte 50% → suivi financier → achat matériel → planning ouvriers avec compétences/dispo → briefs → suivi photo chantier → réutilisation réseaux sociaux). Ce scope élargi est documenté phase par phase dans `ROADMAP.md` (nouveau fichier) plutôt qu'implémenté immédiatement, pour ne pas transformer V1 en un chantier de plusieurs mois. Création de `KB_WORKSHOP_QUESTIONNAIRE.md` pour préparer l'atelier de constitution de la base de connaissances avec Alberto Deco. Mise à jour de ce fichier (nouvelle section 12) pour que ce scope élargi et les décisions prises ne restent pas uniquement dans la conversation. |
 | 2026-08-25 | Cowork | Recherche prompting vidéo, storyboards, plan vidéo final, setup GitHub/repo/Project, connexion MCP Vercel + 21st.dev, création de ce fichier |
 | 2026-08-25 | Cowork | Clarification statut domaine (toujours actif chez Wix, pas de rachat nécessaire). Renommage `albertodecomockup.html` → `index.html`, suppression bandeau maquette, déploiement de la maquette sur Vercel (projet `alberto-deco`), configuration DNS Wix → Vercel (A + CNAME), rattachement du domaine au projet Vercel et génération SSL. Site vérifié en ligne sur alberto-deco.com. Fusion de ce fichier avec une version dupliquée créée par erreur lors d'une session précédente. |
 | 2026-08-25 | Cowork | Recolorisation logo, choix logo final + correction halo/ombre (recadrage PNG serré autour du disque marine), suppression bandeau, agrandissement logo header/footer avec animation d'entrée élégante, réduction ~30% de la hauteur du bandeau beige header (logo autorisé à déborder), typo nav plus élégante/grande, ajout langue NL (+ correction de 2 bugs CSS de spécificité multi-langue), passage du texte de zone géographique à "partout en Belgique" partout sauf section Primes, réécriture complète de la section Primes en 3 blocs régionaux (Wallonie/Bruxelles/Flandre). Lien Artifact de preview maintenu à jour. Mise à jour de ce fichier suite à confusion initiale (dossier Avatar découvert mais aucun entraînement Soul lancé, sur demande explicite de Paolo). Vérification des connecteurs MCP manquants (Vercel non connecté, pas de connecteur GitHub dédié, Resend/Cal.com/chatbot non connectés) et rédaction du plan des prochaines tâches. |
