@@ -2,7 +2,8 @@
 
 > Source de vérité unique du projet. Chaque session (Cowork, Claude Code local, VS Code) doit LIRE ce fichier au démarrage et le METTRE À JOUR à la fin.
 
-**Dernière mise à jour :** 2026-08-30 — session Cowork (conception du système de gestion de contact/devis/chantier, scope V1 gelé, roadmap V2-V5 créée)
+**Dernière mise à jour :** 2026-09-27 — session Hermes (VPS) : **incident site DOWN (404 sur tout le domaine) diagnostiqué et corrigé** — voir section 4 et journal
+**Dernière mise à jour (avant) :** 2026-08-30 — session Cowork (conception du système de gestion de contact/devis/chantier, scope V1 gelé, roadmap V2-V5 créée)
 **Statut global :** 🟡 En cours — Maquette HTML (`index.html`) très avancée visuellement (logo final, charte bleu marine, FR/NL/EN, section Primes à jour, hero vidéo scroll-scrub intégré) et en ligne sur alberto-deco.com ; développement du site final (Next.js/Tailwind) pas commencé. **Nouveau chantier ouvert (30/08/2026)** : conception d'un système de gestion de contact → devis → suivi de chantier (voir section 12) — V1 spécifié, fichiers de base créés, roadmap V2-V5 documentée dans `ROADMAP.md`.
 
 ---
@@ -70,9 +71,30 @@ Plafond fixé : 97 crédits pour tout le site. Dépense estimée à date : image
 - Nouvelles images de référence créées pour la cohérence des personnages : planche 3 ouvriers (identité + tenue de travail avec logo), planche multi-angles de l'avatar, référence camionnette noire avec logo blanc.
 - Nouvelles images avant/après cuisine et salle de bain générées avec Nano Banana 2 (démontage en cours avec un ouvrier visible → pièce rénovée moderne vide), animées en clips séparés (pas de transition morphing entre les deux états — approche qui s'est révélée peu fiable avec Kling 3.0, remplacée par 2 clips distincts assemblés par un cut classique dans CapCut).
 
+### 27/09/2026 — Incident site DOWN (corrigé)
+
+Symptôme : notification reçue par Paolo — `alberto-deco.com` inaccessible (erreur SSL sur l'apex, 404 sur www et sur `alberto-deco.vercel.app`).
+
+Diagnostic (via l'API Vercel, token de compte) :
+- Le dernier déploiement de production était bien construit depuis le commit `4810093` (réorganisation), mais le projet Vercel servait **la racine du repo** (`rootDirectory = null`) — et la racine ne contient plus `index.html` depuis la réorganisation : tout partait en `NOT_FOUND`.
+- Le dossier `WEBSITE ` portait un **espace final dans son nom** (piège silencieux).
+- `hero-video.mp4` et son poster se trouvaient dans `WEBSITE /VIDEO HEREO/` alors que `index.html` les référence en chemin relatif à la racine → **vidéo hero cassée**.
+- L'apex `alberto-deco.com` n'était **pas rattaché** au projet Vercel (seul `www` l'était) → certificat SSL émis uniquement pour `www` → erreur de certificat sur le domaine racine.
+- La protection de déploiement (SSO Vercel) était active sur les déploiements non-domaine → les URLs `*.vercel.app` renvoyaient un écran de login.
+
+Corrections appliquées :
+- Repo : `WEBSITE ` → `website` (espace final supprimé), `hero-video.mp4` + `hero-video-poster.jpg` déplacés à la racine du site, `robots.txt` + `llms.txt` copiés dans `website/` (sitemap.xml y était déjà) — commit `5f47983`, poussé sur `main`.
+- Vercel : `rootDirectory = website`, apex `alberto-deco.com` rattaché au projet + redirection 308 vers `www`, protection SSO désactivée.
+- Vérifié en ligne : `alberto-deco.com` → 308 → `www.alberto-deco.com` → 200 (page complète), `hero-video.mp4` 200 (video/mp4, 10 MB), logo 200, `sitemap.xml`/`robots.txt`/`llms.txt` 200.
+- Effet de bord positif : les fichiers internes (`PROJECT_STATUS.md`, KB, specs) ne sont **plus** servis publiquement (ils l'étaient avant, la racine du repo étant exposée) — désormais 404.
+
+Accès Vercel pour Hermes : token de compte dans `/opt/data/.config/vercel.env` (VPS) — compte `creatorsgrowthagency-eng`, équipe `paolo-6f3c`, projet `alberto-deco` (`prj_AwnhxJ83lPhi2K3VQ2q6TNIQJ2RF`). Le push sur `main` redéploie automatiquement (lien Git actif).
+
 ## 5. En cours 🟡
 
 - Vercel recommande une migration du CNAME `www` vers une nouvelle valeur (`...vercel-dns-017.com`) — non urgent, l'ancien CNAME continue de fonctionner
+- Domaine `alberto-deco.com` : redirection 308 vers `www.alberto-deco.com` (canonique = www, cohérent avec `sitemap.xml`/`robots.txt`/`llms.txt`)
+- `index.html` n'a **pas** de `<link rel="canonical">` (annoncé comme fait dans une session précédente mais absent du fichier) ni de `og:url` — à ajouter, ainsi que le title (`Alberto Deco — Maquette visuelle (V1)`) à revoir pour la version publique
 
 ## 6. À faire 🔜 (ordre)
 
@@ -98,6 +120,7 @@ Plafond fixé : 97 crédits pour tout le site. Dépense estimée à date : image
 | Rôle | Job ID |
 |---|---|
 | Extérieur avant | `21221cbf-8ebe-4c58-a4b5-35521f700eee` |
+| 2026-09-27 | Hermes (VPS) | 🔴 Incident site DOWN corrigé. Diagnostic via l'API Vercel : le projet servait la racine du repo alors que `index.html` avait été déplacé dans `WEBSITE ` (nom avec espace final) lors de la réorganisation du 20/09 → 404 sur tout le site (`NOT_FOUND` Vercel) ; apex `alberto-deco.com` non rattaché au projet (certificat SSL valide pour `www` uniquement) ; protection SSO Vercel active sur les URLs `*.vercel.app`. Corrections : dossier renommé `website/`, `hero-video.mp4` + poster remontés à la racine du site (vidéo hero cassée par des chemins relatifs), `robots.txt`/`llms.txt` copiés dans `website/`, côté Vercel `rootDirectory=website` + apex rattaché + redirection 308 apex→www + SSO désactivée. Site revérifié de bout en bout : 200 sur `www`, redirection correcte depuis l'apex, tous les assets servis. Les fichiers internes (PROJECT_STATUS, KB, specs) ne sont plus exposés publiquement. Token Vercel conservé côté Hermes pour les interventions futures. |
 | Extérieur après | `6c432d05-b418-4041-8995-1a9b927a6f35` |
 | Cuisine avant | `3e818d4a-6efe-4737-9115-f7166d0a7e94` |
 | Cuisine après | `9b2f47d0-2e4a-48a0-946d-01e6416a8f6a` |
