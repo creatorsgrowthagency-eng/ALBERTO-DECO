@@ -1,7 +1,8 @@
 # Les 9 posts d'ouverture — Alberto Déco
 
 > Prêt à exécuter. Chaque fiche : format, pilier, **prompt Higgsfield** (en anglais, c'est ce que le modèle comprend le mieux), commande CLI, légende FR, hashtags, notes de production.
-> Soul à utiliser partout où Alberto apparaît : `cd217d56-7ee9-4b09-ac62-0f78ea1fbddc` (`Alberto Deco/ Papa`).
+> Soul à utiliser quand Alberto apparaît : `cd217d56-7ee9-4b09-ac62-0f78ea1fbddc` (`Alberto Deco/ Papa`).
+> **Règle de casting** : par défaut, **aucun personnage** dans les visuels — le sujet c'est la pièce, la façade, la matière. Alberto apparaît sur **1 à 2 contenus** seulement (post 3, et éventuellement le 9). Les **3 ouvriers** n'apparaissent que sur les contenus « chantier en cours / coulisses » (post 8).
 > Les **textes incrustés** (ville, prestation) ne sont PAS demandés au modèle : on les ajoute en post-prod (CapCut/Canva) — les modèles génèrent mal le texte, et il faut du FR/NL propre.
 
 ## Semaine 1 — lancer la page (le trio « preuve / utilité / visage »)
@@ -73,8 +74,10 @@
   `#facade #renovationbelgique #chassis #avantapres #nivelles`
 
 ### Post 8 — CARROUSEL · Un chantier propre, étape par étape
-- **Pilier** : B · **Slides** : 1) « Ce qui se passe chez vous, jour par jour » 2) protection des sols et meubles 3) préparation des murs 4) peinture 5) remise en ordre + évacuation des déchets 6) CTA
-- **Prompt** : `Realistic photo of a well-organised Belgian renovation worksite: floors fully covered with protective cardboard and plastic sheeting, furniture wrapped, paint buckets aligned in a corner, natural light, tidy and professional, no people, no text`
+- **Pilier** : B (coulisses) · **Slides** : 1) « Ce qui se passe chez vous, jour par jour » 2) protection des sols et meubles 3) préparation des murs 4) peinture 5) remise en ordre + évacuation des déchets 6) CTA
+- **Visuel** : c'est **le post « humain » avec les 3 ouvriers** (chantier en cours, pas un après propre)
+- **Prompt (3 ouvriers en plein travail)** : `Realistic photo of three professional Belgian renovation workers in clean navy and grey workwear actively working in a Belgian house under renovation, one preparing a wall, one rolling soft white paint, one carrying material, protective sheeting on the floor, natural light, candid documentary photography, no text`
+- **Prompt (variante sans visage visible, plus "coulisses")** : `Realistic photo of a well-organised Belgian renovation worksite: floors fully covered with protective cardboard and plastic sheeting, furniture wrapped, paint buckets aligned in a corner, stepladder and tools in use, natural light, tidy and professional, no people, no text`
 - **Légende** : `On part comme on est arrivés : propre. Protection, préparation, remise en ordre — c'est notre méthode.`
   `#chantierpropre #artisanbelge #renovationbelgique #serieux #confiance`
 

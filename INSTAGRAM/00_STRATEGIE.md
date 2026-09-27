@@ -10,7 +10,7 @@
 | Sujet | Décision |
 |---|---|
 | Nature de la page | **Page vitrine + crédibilité** d'abord, génération de devis ensuite |
-| Visages | **Alberto Déco (le patron, Soul Higgsfield existant)** + **les 3 ouvriers** = l'équipe. La mascotte reste pour les illustrations/ambiances uniquement |
+| Visages | **Règle de casting** : les avant/après montrent **le bâtiment, pas les gens** — aucun personnage dans ~80 % des contenus. **Alberto** apparaît sur 1–2 contenus « humains » (portrait / fin de chantier) ; **les 3 ouvriers** apparaissent seulement quand on montre un **chantier en cours / des coulisses**. La mascotte reste pour les illustrations et ambiances uniquement |
 | Langue | **FR** par défaut (NL en légende secondaire sur les posts « primes », marché flamand étant le plus gros) |
 | Type de visuels | **100 % IA** (le client n'a pas encore de photos de chantiers récents) |
 | Réalisme | **Obligatoirement belge** : briques cuites, châssis blancs, pierre bleue, sols en carrelage/briques, toits à deux pans, intérieurs belges — jamais de typologie US/espagnole |
