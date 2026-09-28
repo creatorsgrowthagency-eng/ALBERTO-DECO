@@ -23,14 +23,19 @@
   `#avantapres #renovationbelgique #peinturebelgique #brabantwallon #wavre`
 - **Notes** : transition de la transition (élément qui balaie le cadre). En post-prod : incruster « Wavre · Peinture + préparation des murs ».
 
-### Post 2 — CARROUSEL · Primes rénovation 2026 (Wallonie / Bruxelles / Flandre)
-- **Pilier** : C · **Format** : 5–6 slides · **Visuel** : 1 image générique belle (salle d'un chantier lumineux) + texte incrusté par slide
-- **Prompt** :
-  `Realistic photo of a bright Belgian house interior with fresh white paint and a ladder, painter's tools neatly arranged on a drop cloth, brick wall, natural light, clean and professional, no people, no text`
-- **Slides** : 1) « Primes rénovation : ce qui est encore possible en 2026 » 2) Wallonie 3) Bruxelles 4) Flandre 5) « On vous aide à monter le dossier » 6) « Devis gratuit sous 24h »
-- **Légende** : `Les primes changent en 2026 — voici l'essentiel par région. On peut vous aider à monter le dossier.`
-- **Hashtags** : `#primesrenovation #renovationbelgique #renovationbruxelles #renovationwallonie #mijnverbouwpremie`
-- **Notes** : contenu à valider sur le fond avant publication (les régimes évoluent, cf. section Primes du site).
+### Post 2 — CARROUSEL · Primes rénovation : la bascule du 1er octobre (Wallonie)
+> **Réécrit le 29/09 après recherche** : c'est LE sujet chaud pour un particulier du Brabant wallon cette semaine (RTBF 27/09, RTL 25/09).
+- **Pilier** : C · **Format** : 6 slides 1080×1350 · **Visuel** : l'image « intérieur préparé » (`POST-02_primes_intro.jpg`) + texte incrusté par slide
+- **Slides** :
+  1. Hook daté : **« Primes rénovation Wallonie : ce qui change le 1er octobre »**
+  2. **« Votre devis est daté et signé avant le 14/02/2025 ? Vous gardez l'ancien régime »** — l'acompte de 20 % n'est plus exigé, travaux à terminer et demande à introduire **avant le 30/09/2027**
+  3. **« Dès le 1er octobre : place aux prêts »** — Rénopack (taux zéro) + Rénoprêt, **jusqu'à 75 000 €**, condition de « saut de label » (PEB G/F → minimum D, E → minimum C), audit logement finançable
+  4. **Bruxelles & Flandre** : ce qui reste ouvert (bref, une ligne chacune)
+  5. **« On vérifie votre éligibilité en 10 minutes »**
+  6. CTA : **« Devis gratuit sous 24h »**
+- **Légende** : `Le 1er octobre, les primes rénovation en Wallonie changent de nature. Si votre devis est antérieur au 14/02/2025, vous avez encore une fenêtre — on vous dit quoi faire.`
+- **Hashtags** : `#primesrenovation #renovationwallonie #brabantwallon #renovationbelgique #renopack`
+- **Notes** : c'est un aimant à demandes de devis. Dire les choses simplement, une info par slide. À publier **vite** (la date du 1er octobre rend le post urgent).
 
 ### Post 3 — STATIQUE · L'équipe / le visage d'Alberto
 - **Pilier** : B · **Format** : statique 4:5 · **Coût** : 0,12 cr
@@ -53,11 +58,20 @@
 - **Légende** : `Une salle de bain des années 90 devenue sobre et moderne. Tous corps de métier coordonnés par Alberto Déco.`
   `#salledebain #renovationbelgique #avantapres #waterloo #renovationsalledebain`
 
-### Post 5 — CARROUSEL · 5 erreurs à éviter avant de repeindre
-- **Pilier** : C · **Slides** : 1) la promesse 2) pas de sous-couche sur mur neuf 3) peindre par temps humide 4) mauvais choix de finition (mate/satin) 5) ne pas protéger les sols 6) CTA
-- **Prompt** : `Realistic close-up photo of a painter's roller applying soft white paint on a smooth wall in a Belgian house, sharp texture, professional tools, natural light, no people visible, no text`
-- **Légende** : `80 % de la qualité d'une peinture se joue avant le premier coup de rouleau. Voici les 5 erreurs qu'on voit le plus souvent.`
-  `#conseilpeinture #peinturebelgique #renovationinterieure #bricolagebelgique`
+### Post 5 — CARROUSEL · Anti-objections : ce qu'aucun artisan n'explique
+> **Réécrit le 29/09 après recherche** : les fils les plus commentés de la fenêtre sont les conflits devis/périmètre (comparer 2 devis, « ce n'était pas inclus », « l'artisan ne rappelle pas »). On transforme les « 5 erreurs » en réponses directes.
+- **Pilier** : C · **Slides** (1080×1350) :
+  1. Hook : **« Votre artisan ne vous a jamais rappelé après le devis ? On vous explique ce qui se passe de l'autre côté »**
+  2. **Comment comparer 2 devis** — même SDB à 17 000 € et 36 000 € : ce n'est pas le prix qui diffère, c'est le périmètre. Trois questions à poser.
+  3. **Ce qui doit être écrit au contrat** — rien décidé à l'oral, jamais (« ce n'était pas inclus » = la cause n°1 de conflit)
+  4. **« Une porte a 6 faces »** — pourquoi on prime haut ET bas (détail que les clients ignorent, très commenté)
+  5. **Ce que vous pouvez préparer vous-même** — photos, budget indicatif, style voulu → moins de rendez-vous inutiles, devis plus juste
+  6. **Nos engagements écrits** : garantie, délai de réponse, charte de chantier propre
+  7. CTA : **« Devis gratuit sous 24h »**
+- **Visuel** : `POST-05_peinture_closeup.jpg` en slide 1, puis texte sur fond sobre
+- **Légende** : `Un devis, ce n'est pas un prix : c'est un périmètre. Voilà comment nous travailler et comment comparer ce qu'on vous propose.`
+- **Hashtags** : `#devis #peinturebelgique #artisanbelge #renovationbelgique #conseils`
+- **Notes** : c'est le post le plus « à sauvegarder » de la série — et celui qui désamorce les objections avant l'appel.
 
 ### Post 6 — STATIQUE · Matières & couleurs 2026
 - **Pilier** : D · **Prompt** : `Realistic moodboard-style photo of 2026 interior finishing materials: warm white paint swatches, natural linen fabric, light oak wood sample, brushed brass detail, on a light plaster background, soft daylight, flat lay, no text`

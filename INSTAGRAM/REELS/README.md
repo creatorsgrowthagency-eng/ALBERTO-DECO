@@ -10,6 +10,8 @@ Produits le 28/09/2026. Format **1080 × 1920 (9:16)**, **7,0 s**, 30 fps, H.264
 | `REEL-02-sdb.mp4` | Salle de bain (beige 80's → pierre + douche italienne) | Waterloo · Salle de bain complète |
 | `REEL-03-facade.mp4` | Façade brique belge (sale → rejointoyée + châssis anthracite) | Nivelles · Façade & châssis |
 
+**Variante A/B :** `REEL-01b-salon-resultat-dabord.mp4` — même sujet, structure **« résultat d'abord »** recommandée par la recherche : 1,2 s du résultat fini (accroche) → l'avant → balayage → l'après. 6,4 s. À comparer avec `REEL-01-salon.mp4` pour choisir la structure qu'on généralise (voir `../03_RECHERCHE_30JOURS.md`).
+
 `APERCU-frames.jpg` = contrôle visuel (avant à t=1 s / après à t=5 s pour les 3 reels).
 `STILL-1/2/3-avant|apres.jpg` = les 6 images verticales utilisées (réutilisables en posts ou en carrousels).
 
