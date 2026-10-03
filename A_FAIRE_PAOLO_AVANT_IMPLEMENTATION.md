@@ -34,6 +34,12 @@ Coche au fur et à mesure. Pour chaque ligne : ce qu'il faut faire, et ce qu'il 
 
 - [ ] **Contact Telegram d'Alberto** — rien à préparer à l'avance : le chat ID d'Alberto s'obtient automatiquement dès qu'il envoie un premier message au bot créé ci-dessus. Prévoir juste qu'Alberto installe Telegram sur son téléphone et envoie ce premier message le moment venu.
 
+**Actions à faire :**
+- [ ] 2026-10-12 : Créer le bot Telegram (BotFather) pour Alberto Deco
+- [ ] 2026-10-13 : Créer SendGrid + configurer le domaine alberto-deco.com
+- [ ] 2026-10-14 : Créer le projet Supabase pour Alberto Deco
+- [ ] 2026-10-15 : Créer Cal.com + event type "Visite chantier / Devis"
+
 ---
 
 ## 2. Comment transmettre les identifiants sensibles

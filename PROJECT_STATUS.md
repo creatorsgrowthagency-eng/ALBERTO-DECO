@@ -88,6 +88,13 @@ Plafond fixé : 97 crédits pour tout le site. Dépense estimée à date : image
 10. Optimisation performance (compression images, lazy loading) une fois le contenu final ajouté
 11. Vérifier/activer le connecteur MCP GitHub pour cette session si besoin d'accès direct en lecture/écriture au repo
 
+**Actions à faire :**
+- [ ] 2026-10-16 : Coder le site Next.js/Tailwind Alberto Deco (hero vidéo scroll-scrub)
+- [ ] 2026-10-17 : Valider/enrichir la copy FR/EN/NL définitive du site
+- [ ] 2026-10-18 : Compléter les infos légales/entreprise pour le footer
+- [ ] 2026-10-19 : Optimiser la performance (compression images, lazy loading)
+- [ ] 2026-10-20 : Clarifier l'incohérence badge logo vs texte du site avec Paolo
+
 ## 6b. Backlog non prioritaire / non urgent
 
 - Incohérence entre le badge du logo ("ALBERTO DÉCO — SINCE 1989") et le texte du site ("+30 ans d'expérience", ce qui pointe vers ~1996) — à clarifier avec Paolo (quelle est la vraie date de création ?) avant d'ajouter un `foundingDate` en schema.org sur le site final
