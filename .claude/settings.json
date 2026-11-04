@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"/Users/Paolo/Documents/CLAUDE LOCAL/Memoire-Partagee/rituel-fin-de-session/hook-session-end.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}
